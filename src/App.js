@@ -4,7 +4,7 @@ import PermissionManager from './services/PermissionManager';
 
 const notify = () => {
 	PermissionManager.create({
-		type: 'location', data: { audio: true, video: true },
+		type: 'sensor', data: { name: 'accelerometer' },
 	});
 };
 const App = () => <div className="App">

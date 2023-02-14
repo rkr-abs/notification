@@ -1,7 +1,7 @@
 import permissions from './permissions';
 
-const create = ({ type, data }) => {
-	permissions[type](data);
+const create = async ({ type, data }) => {
+	await permissions[type](data);
 };
 
 const PermissionManager = { create };
