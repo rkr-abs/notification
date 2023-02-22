@@ -2,23 +2,13 @@ import { peek } from '@laufire/utils/debug';
 
 const permissions = {
 	notification: () => Notification.requestPermission(),
-	location: () => navigator.geolocation.getCurrentPosition(() => {}),
-	media: (data) => navigator.mediaDevices.getUserMedia(data)
-		.then((mediaStream) => {
-			const video = document.querySelector('#video');
+	location: () => {
+	 navigator.geolocation.watchPosition((e) =>
+			peek(e.coords.accuracy));
+	},
+	media: (data) => navigator.mediaDevices.getUserMedia(data),
+	midi: () => navigator.permissions.query({ name: 'geolocation' }),
 
-			video.srcObject = mediaStream;
-			video.onloadedmetadata = () => {
-				video.play();
-			};
-		})
-		.catch((err) => {
-		// always check for errors at the end.
-			peek(`${ err.name }: ${ err.message }`);
-		}),
-	sensor: (data) => navigator.permissions.query(data)
-
-	,
 };
 
 export default permissions;

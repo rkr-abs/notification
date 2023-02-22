@@ -1,17 +1,12 @@
 import { React } from 'react';
 import './App.scss';
-import PermissionManager from './services/PermissionManager';
+import permissions from './services/permissions';
 
-const notify = () => {
-	PermissionManager.create({
-		type: 'media', data: {
-			audio: true,
-			video: { width: 1280, height: 720 },
-		},
-	});
-};
 const App = () => <div className="App">
-	<button onClick={ notify }>Click</button>
+	<button onClick={ async () => {
+		await permissions.location();
+	} }
+	>Click</button>
 	<div id="video"/>
 </div>;
 
