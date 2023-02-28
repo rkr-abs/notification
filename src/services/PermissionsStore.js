@@ -1,15 +1,16 @@
 
+// eslint-disable-next-line max-lines-per-function
 const PermissionStore = (data) => {
-	const { entity: defaultEntity } = data;
+	const { entity: defaultEntity, pipe } = data;
 
 	const actions = {
 		read: async ({ entity }) => {
 			const permissionName = {
 				location: 'geolocation',
-				notification: 'notifications',
 			};
+			const config = permissionName[entity] || entity;
 			const permissionStatus = await navigator
-				.permissions.query({ name: permissionName[entity] });
+				.permissions.query({ name: config });
 
 			return {
 				[entity]: { allowed: permissionStatus.state === 'granted' },
@@ -17,8 +18,13 @@ const PermissionStore = (data) => {
 		},
 	};
 
-	const store = ({ action, entity, data: storeData }) =>
-		actions[action]({ entity: entity || defaultEntity, data: storeData });
+	const store = async ({ action, entity, data: storeData }) => {
+		const temp = await actions[action]({
+			entity: entity || defaultEntity, data: storeData,
+		});
+
+		pipe(temp);
+	};
 
 	return store;
 };

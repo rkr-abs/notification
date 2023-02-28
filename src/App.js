@@ -1,10 +1,16 @@
+import { peek } from '@laufire/utils/debug';
 import { React } from 'react';
 import './App.scss';
-import permissions from './services/permissions';
+import PermissionStore from './services/PermissionsStore';
 
-const App = () => <div className="App">
-	<button onClick={ async () => {
-		await permissions.location();
+const App = (context) => <div className="App">
+	<button onClick={ () => {
+		const { config: { permissionsName }} = context;
+
+		permissionsName.map((permission) =>
+			PermissionStore({ data: '', pipe: peek })({
+				action: 'read', entity: permission,
+			}));
 	} }
 	>Click</button>
 	<div id="video"/>
