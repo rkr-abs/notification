@@ -4,9 +4,14 @@ const config = {
 		'geolocation',
 		'microphone',
 		'midi',
+		'notifications',
 		'magnetometer',
 		'accelerometer',
-		'notifications',
+		'background-sync',
+		'payment-handler',
+		'gyroscope',
+		'local-fonts',
+		'clipboard-read',
 	],
 };
 

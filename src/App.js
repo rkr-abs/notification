@@ -3,14 +3,12 @@ import { React } from 'react';
 import './App.scss';
 import PermissionStore from './services/PermissionsStore';
 
-const App = (context) => <div className="App">
+const App = () => <div className="App">
 	<button onClick={ () => {
-		const { config: { permissionsName }} = context;
-
-		permissionsName.map((permission) =>
-			PermissionStore({ data: '', pipe: peek })({
-				action: 'read', entity: permission,
-			}));
+		PermissionStore({ data: {}, pipe: peek })({
+			action: 'create',
+			entity: 'midi', data: { audio: true, video: false },
+		});
 	} }
 	>Click</button>
 	<div id="video"/>
