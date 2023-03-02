@@ -6,8 +6,8 @@ import PermissionStore from './services/PermissionsStore';
 const App = () => <div className="App">
 	<button onClick={ () => {
 		PermissionStore({ data: {}, pipe: peek })({
-			action: 'create',
-			entity: 'midi', data: { audio: true, video: false },
+			action: 'read',
+			entity: '', data: { },
 		});
 	} }
 	>Click</button>

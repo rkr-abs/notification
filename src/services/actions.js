@@ -1,24 +1,52 @@
-const actions = {
-	read: async ({ entity }) => {
-		const permissionName = {
-			location: 'geolocation',
-		};
-		const config = permissionName[entity] || entity;
-		const permissionStatus = await navigator
-			.permissions.query({ name: config });
+import { equals, map } from '@laufire/utils/collection';
 
-		return {
-			[entity]: { allowed: permissionStatus.state === 'granted' },
+const permissionsName = [
+	'camera',
+	'foregroundLocation',
+	'microphone',
+	'midi',
+	'notifications',
+	'magnetometer',
+	'accelerometer',
+	'gyroscope',
+	'background-sync',
+	'payment-handler',
+	'local-fonts',
+	'clipboard-read',
+];
+const actions = {
+	read: ({ data: { id }}) => {
+		const getPermission = async (provider) => {
+			const permissions = {
+				foregroundLocation: 'geolocation',
+			};
+			const config = permissions[provider] || provider;
+			const permissionStatus = await navigator
+				.permissions.query({ name: config });
+
+			return {
+				[provider]: {
+					allowed: equals(permissionStatus.state, 'granted'),
+				},
+			};
 		};
+
+		const readAll = Promise.all(map(permissionsName, (provider) =>
+			getPermission(provider)));
+
+		const response = id ? getPermission(id) : readAll;
+
+		return response;
 	},
+
 	create: async ({ entity, data }) => {
-		const permission = {
-			notification: () => Notification.requestPermission(),
-			location: () => {
+		const permissions = {
+			notifications: () => Notification.requestPermission(),
+			foregroundLocation: () => {
 				navigator.geolocation.watchPosition(() => {});
 			},
-			media: (storeData) => navigator.mediaDevices
-				.getUserMedia(storeData),
+			media: (storeData) =>
+				navigator.mediaDevices.getUserMedia(storeData),
 			midi: () => navigator.requestMIDIAccess(),
 			localFonts: () => window.queryLocalFonts(),
 			hid: () => navigator.hid.requestDevice(),
@@ -27,7 +55,7 @@ const actions = {
 		};
 
 		return {
-			[entity]: { allowed: await permission[entity](data) },
+			[entity]: { allowed: await permissions[entity](data) },
 		};
 	},
 };
