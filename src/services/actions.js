@@ -1,22 +1,23 @@
-import { equals, map } from '@laufire/utils/collection';
+/* eslint-disable max-lines-per-function */
+import { map } from '@laufire/utils/collection';
 
-const permissionsName = [
+const permissionNames = [
 	'camera',
 	'foregroundLocation',
 	'microphone',
 	'midi',
 	'notifications',
+	'local-fonts',
+	'clipboard-read',
 	'magnetometer',
 	'accelerometer',
 	'gyroscope',
 	'background-sync',
 	'payment-handler',
-	'local-fonts',
-	'clipboard-read',
 ];
 const actions = {
-	read: ({ data: { id }}) => {
-		const getPermission = async (provider) => {
+	read: async ({ data: { id }}) => {
+		const getStatus = async (provider) => {
 			const permissions = {
 				foregroundLocation: 'geolocation',
 			};
@@ -25,38 +26,67 @@ const actions = {
 				.permissions.query({ name: config });
 
 			return {
-				[provider]: {
-					allowed: equals(permissionStatus.state, 'granted'),
-				},
+				id: provider,
+				status: permissionStatus.state,
 			};
 		};
 
-		const readAll = Promise.all(map(permissionsName, (provider) =>
-			getPermission(provider)));
+		const readAll = Promise.all(map(permissionNames, (permissionName) =>
+			getStatus(permissionName)));
 
-		const response = id ? getPermission(id) : readAll;
+		const response = id ? getStatus(id) : readAll;
 
-		return response;
+		return { data: await response };
 	},
 
-	create: async ({ entity, data }) => {
-		const permissions = {
+	update: async (context) => {
+		const { data: { id }} = context;
+
+		const permissionStatus = (config) => navigator
+			.permissions.query({ name: config });
+
+		const requestPermissions = {
 			notifications: () => Notification.requestPermission(),
-			foregroundLocation: () => {
-				navigator.geolocation.watchPosition(() => {});
+			foregroundLocation: ({ pipe }) => {
+				const success = () => {
+					const resp = { status: 'granted',
+						id: 'foregroundLocation' };
+
+					pipe(resp);
+				};
+
+				const error = () => {
+					const resp = { status: 'denied',
+						id: 'foregroundLocation' };
+
+					pipe(resp);
+				};
+
+				navigator.geolocation.getCurrentPosition(success, error);
 			},
-			media: (storeData) =>
-				navigator.mediaDevices.getUserMedia(storeData),
+			camera: () => navigator.mediaDevices.getUserMedia({ video: true }),
+			microphone: () =>
+				navigator.mediaDevices.getUserMedia({ audio: true }),
 			midi: () => navigator.requestMIDIAccess(),
-			localFonts: () => window.queryLocalFonts(),
+			localFonts: async () => {
+				await window.queryLocalFonts();
+				const res = await permissionStatus('local-fonts');
+
+				return res.state;
+			},
 			hid: () => navigator.hid.requestDevice(),
-			clipboard: () => navigator.clipboard.read(),
-			usb: () => navigator.usb.getDevices(),
+			clipboard: async () => {
+				await navigator.clipboard.read();
+				const res = await permissionStatus('clipboard-read');
+
+				return res.state;
+			},
+			usb: () => navigator.usb.requestDevice(),
 		};
 
-		return {
-			[entity]: { allowed: await permissions[entity](data) },
-		};
+		return { data: { status: await requestPermissions[id](context),
+			id: id },
+		status: 'completed' };
 	},
 };
 

@@ -4,10 +4,10 @@ import './App.scss';
 import PermissionStore from './services/PermissionsStore';
 
 const App = () => <div className="App">
-	<button onClick={ () => {
-		PermissionStore({ data: {}, pipe: peek })({
-			action: 'read',
-			entity: '', data: { },
+	<button onClick={ async () => {
+		await PermissionStore({ data: {}, pipe: peek })({
+			action: 'update',
+			entity: '', data: { id: 'foregroundLocation' },
 		});
 	} }
 	>Click</button>

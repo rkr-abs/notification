@@ -1,15 +1,25 @@
 import actions from './actions';
 
-// eslint-disable-next-line max-lines-per-function
 const PermissionStore = (data) => {
 	const { entity: defaultEntity, pipe } = data;
 
-	const store = async ({ action, entity, data: storeData }) => {
-		const value = await actions[action]({
-			entity: entity || defaultEntity, data: storeData,
-		});
+	const store = async (context) => {
+		const { action, entity } = context;
 
-		pipe(value);
+		await pipe({ action: action, status: 'pending' });
+
+		const wrapper = (resp) => pipe({ action: action,
+			status: status, data: resp, ...rest });
+
+		const {
+			status = 'completed',
+			data: response,
+			...rest
+		} = await actions[action]({ ...context,
+			entity: entity || defaultEntity,
+			pipe: wrapper });
+
+		response.status && wrapper(response);
 	};
 
 	return store;
