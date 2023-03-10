@@ -1,8 +1,8 @@
 const double = (input) => {
 	const multiplier = 2;
 	const type = {
-		string: input * multiplier,
-		number: input + input,
+		number: input * multiplier,
+		string: input + input,
 	};
 
 	return type[typeof input];

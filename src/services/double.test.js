@@ -9,8 +9,8 @@ describe('double', () => {
 			const multiplier = 2;
 			const input = data;
 			const type = {
-				string: input * multiplier,
-				number: input + input,
+				number: input * multiplier,
+				string: input + input,
 			};
 			const expected = type[inputType] ;
 			const result = double(input);
