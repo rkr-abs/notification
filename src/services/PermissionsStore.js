@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import entities from './entities';
 
 const PermissionStore = (data) => {
@@ -12,18 +11,14 @@ const PermissionStore = (data) => {
 		const wrapper = (resp) => pipe({ ...context,
 			status: status, data: resp, ...rest });
 
-		const {
-			status = 'completed',
+		const { status = 'completed',
 			data: response,
-			...rest
-		} = await entities[entity]({ ...context,
+			...rest } = await entities[entity]({ ...context,
 			entity: entity || defaultEntity,
 			pipe: wrapper })
-			.catch((error) => ({
-				status: 'failed',
+			.catch((error) => ({ status: 'failed',
 				data: { ...context.data, status: 'undetermined' },
-				error: error,
-			}));
+				error: error }));
 
 		response && wrapper(response);
 	};
