@@ -1,13 +1,22 @@
-import { peek } from '@laufire/utils/debug';
 
 const permissions = {
-	notification: () => Notification.requestPermission(),
-	location: () => {
-		navigator.geolocation.watchPosition((e) =>
-			peek(e.coords.accuracy));
+	read: async (context) => {
+		const { entity: permissionType } = context;
+		const types = {
+			foregroundLocation: ({ pipe }) => {
+				navigator.geolocation.getCurrentPosition((data) =>
+					pipe(data));
+			},
+			camera: () => navigator.mediaDevices.getUserMedia({ video: true }),
+			microphone: () => navigator.mediaDevices
+				.getUserMedia({ audio: true }),
+			hid: () => navigator.hid.getDevices(),
+			usb: () => navigator.usb.getDevices(),
+
+		};
+
+		return { data: await types[permissionType](context) };
 	},
-	media: (data) => navigator.mediaDevices.getUserMedia(data),
-	midi: () => navigator.permissions.query({ name: 'geolocation' }),
 
 };
 

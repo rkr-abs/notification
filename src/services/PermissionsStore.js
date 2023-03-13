@@ -1,11 +1,11 @@
 /* eslint-disable max-lines-per-function */
-import actions from './actions';
+import entities from './entities';
 
 const PermissionStore = (data) => {
 	const { entity: defaultEntity, pipe } = data;
 
 	const store = async (context) => {
-		const { action, entity } = context;
+		const { entity } = context;
 
 		await pipe({ ...context, status: 'pending' });
 
@@ -16,13 +16,14 @@ const PermissionStore = (data) => {
 			status = 'completed',
 			data: response,
 			...rest
-		} = await actions[action]({ ...context,
+		} = await entities[entity]({ ...context,
 			entity: entity || defaultEntity,
-			pipe: wrapper }).catch((error) => ({
-			status: 'failed',
-			data: { ...context.data, status: 'undetermined' },
-			error: error,
-		}));
+			pipe: wrapper })
+			.catch((error) => ({
+				status: 'failed',
+				data: { ...context.data, status: 'undetermined' },
+				error: error,
+			}));
 
 		response && wrapper(response);
 	};
