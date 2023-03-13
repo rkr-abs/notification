@@ -7,7 +7,7 @@ const App = () => <div className="App">
 	<button onClick={ async () => {
 		await PermissionStore({ data: {}, pipe: peek })({
 			action: 'update',
-			entity: '', data: { id: 'midi' },
+			entity: 'permissions', data: { id: 'notifications' },
 		});
 	} }
 	>Click</button>
