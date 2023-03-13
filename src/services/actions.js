@@ -22,6 +22,7 @@ const actions = {
 				foregroundLocation: 'geolocation',
 			};
 			const config = permissions[provider] || provider;
+
 			const permissionStatus = await navigator
 				.permissions.query({ name: config });
 
@@ -74,19 +75,25 @@ const actions = {
 
 				return res.state;
 			},
-			hid: () => navigator.hid.requestDevice(),
+			hid: () => {
+				const res = navigator.hid.requestDevice({ filters: [] });
+
+				return res === [] ? 'granted' : 'denied';
+			},
 			clipboard: async () => {
 				await navigator.clipboard.read();
 				const res = await permissionStatus('clipboard-read');
 
 				return res.state;
 			},
-			usb: () => navigator.usb.requestDevice(),
+			usb: () => navigator.usb.requestDevice({ filters: [] }),
 		};
+		const requestedStatus = await requestPermissions[id](context);
 
-		return { data: { status: await requestPermissions[id](context),
-			id: id },
-		status: 'completed' };
+		return requestedStatus
+			? { data: { status: requestedStatus, id: id },
+				status: 'completed' }
+			: {};
 	},
 };
 
