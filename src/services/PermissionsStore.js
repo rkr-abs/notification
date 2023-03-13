@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import actions from './actions';
 
 const PermissionStore = (data) => {
@@ -18,7 +19,9 @@ const PermissionStore = (data) => {
 		} = await actions[action]({ ...context,
 			entity: entity || defaultEntity,
 			pipe: wrapper }).catch((error) => ({
-			status: 'failed', data: context.data, error: error,
+			status: 'failed',
+			data: { ...context.data, status: 'undetermined' },
+			error: error,
 		}));
 
 		response && wrapper(response);
