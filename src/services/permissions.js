@@ -1,23 +1,56 @@
+import { map } from '@laufire/utils/collection';
+import requestPermissions from './requestPermissions';
 
+const permissionsList = [
+	'camera',
+	'foregroundLocation',
+	'microphone',
+	'midi',
+	'notifications',
+	'local-fonts',
+	'clipboard-read',
+	'magnetometer',
+	'accelerometer',
+	'gyroscope',
+	'background-sync',
+	'payment-handler',
+];
 const permissions = {
-	read: async (context) => {
-		const { entity: permissionType } = context;
-		const types = {
-			foregroundLocation: ({ pipe }) => {
-				navigator.geolocation.getCurrentPosition((data) =>
-					pipe(data));
-			},
-			camera: () => navigator.mediaDevices.getUserMedia({ video: true }),
-			microphone: () => navigator.mediaDevices
-				.getUserMedia({ audio: true }),
-			hid: () => navigator.hid.getDevices(),
-			usb: () => navigator.usb.getDevices(),
+	read: async ({ data: { id }}) => {
+		const getStatus = async (provider) => {
+			const enhancedPermissions = {
+				foregroundLocation: 'geolocation',
+			};
+			const config = enhancedPermissions[provider] || provider;
 
+			const permissionStatus = await navigator
+				.permissions.query({ name: config });
+
+			return {
+				id: provider,
+				status: permissionStatus.state,
+			};
 		};
 
-		return { data: await types[permissionType](context) };
+		const readAll = Promise.all(map(permissionsList, (permissionName) =>
+			getStatus(permissionName)));
+
+		const response = id ? getStatus(id) : readAll;
+
+		return { data: await response };
 	},
 
+	update: async (context) => {
+		const { data: { id }} = context;
+
+		const requestedStatus = await requestPermissions[id](context);
+
+		return requestedStatus
+			? { data: { status: requestedStatus,
+				id: id, canAskAgain: requestedStatus === 'granted' },
+			status: 'completed' }
+			: {};
+	},
 };
 
 export default permissions;
