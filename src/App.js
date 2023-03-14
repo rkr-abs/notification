@@ -1,14 +1,15 @@
 /* eslint-disable max-len */
-import { peek } from '@laufire/utils/debug';
 import { React } from 'react';
 import './App.scss';
 import PermissionStore from './services/PermissionsStore';
 
 const App = () => {
 	alert('HELLO Nirupan :)');
+	const pipe = (data) => alert(JSON.stringify(data));
+
 	return <div className="App">
 		<button onClick={ async () => {
-			await PermissionStore({ data: {}, pipe: peek })({
+			await PermissionStore({ data: {}, pipe: pipe })({
 				action: 'read',
 				entity: 'permissions', data: {},
 			});
