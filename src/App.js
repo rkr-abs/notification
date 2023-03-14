@@ -5,7 +5,7 @@ import './App.scss';
 import PermissionStore from './services/PermissionsStore';
 
 const App = () => {
-	peek('HELLO Nirupan :)');
+	alert('HELLO Nirupan :)');
 	return <div className="App">
 		<button onClick={ async () => {
 			await PermissionStore({ data: {}, pipe: peek })({
