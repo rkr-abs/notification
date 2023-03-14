@@ -6,8 +6,8 @@ import PermissionStore from './services/PermissionsStore';
 const App = () => <div className="App">
 	<button onClick={ async () => {
 		await PermissionStore({ data: {}, pipe: peek })({
-			action: 'update',
-			entity: 'permissions', data: { id: 'notifications' },
+			action: 'read',
+			entity: 'foregroundLocation', data: { },
 		});
 	} }
 	>Click</button>

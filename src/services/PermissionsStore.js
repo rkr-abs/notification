@@ -4,7 +4,7 @@ const PermissionStore = (data) => {
 	const { entity: defaultEntity, pipe } = data;
 
 	const store = async (context) => {
-		const { entity } = context;
+		const { entity, action } = context;
 
 		await pipe({ ...context, status: 'pending' });
 
@@ -13,12 +13,12 @@ const PermissionStore = (data) => {
 
 		const { status = 'completed',
 			data: response,
-			...rest } = await entities[entity]({ ...context,
-			entity: entity || defaultEntity,
-			pipe: wrapper })
-			.catch((error) => ({ status: 'failed',
-				data: { ...context.data, status: 'undetermined' },
-				error: error }));
+			...rest }
+			= await entities[entity || defaultEntity][action]({ ...context,
+				pipe: wrapper })
+				.catch((error) => ({ status: 'failed',
+					data: { ...context.data, status: 'undetermined' },
+					error: error }));
 
 		response && wrapper(response);
 	};
