@@ -12,6 +12,7 @@ const App = () => {
 
 	return <div className="App">
 		<button onClick={ async () => {
+			alert('Hi');
 			const res = await navigator.mediaDevices.getUserMedia({ video: true });
 
 			alert(res.id);
