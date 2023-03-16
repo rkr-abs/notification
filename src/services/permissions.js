@@ -5,15 +5,8 @@ const permissionsList = [
 	'camera',
 	'foregroundLocation',
 	'microphone',
-	'midi',
 	'notifications',
-	'local-fonts',
-	'clipboard-read',
-	'magnetometer',
-	'accelerometer',
-	'gyroscope',
-	'background-sync',
-	'payment-handler',
+
 ];
 const permissions = {
 	read: async ({ data: { id }}) => {
