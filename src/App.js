@@ -1,6 +1,5 @@
 /* eslint-disable max-lines-per-function */
 /* eslint-disable max-len */
-import { peek } from '@laufire/utils/debug';
 import { React, useState } from 'react';
 import './App.scss';
 import PermissionStore from './services/PermissionsStore';
@@ -29,7 +28,7 @@ const App = () => {
 		} }
 		>RequestPermissions</button>
 		<div>{
-			peek(state).map((e, key) => <h1 key={ key }>{e.id} : {e.status}</h1>)
+			state.map((e, key) => <h1 key={ key }>{e.id} : {e.status}</h1>)
 		}</div>
 	</div>;
 };

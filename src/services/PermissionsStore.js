@@ -6,8 +6,6 @@ const PermissionStore = (data) => {
 	const store = async (context) => {
 		const { entity, action } = context;
 
-		await pipe({ ...context, status: 'pending', data: [] });
-
 		const wrapper = (resp) => pipe({ ...context,
 			status: status, data: resp, ...rest });
 
