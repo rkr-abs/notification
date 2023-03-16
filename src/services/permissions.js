@@ -29,6 +29,7 @@ const permissions = {
 			return {
 				id: provider,
 				status: permissionStatus.state,
+				canAskAgain: permissionStatus.state === 'prompt',
 			};
 		};
 

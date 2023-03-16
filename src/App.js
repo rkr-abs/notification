@@ -1,18 +1,20 @@
 /* eslint-disable max-len */
+import { peek } from '@laufire/utils/debug';
 import { React } from 'react';
 import './App.scss';
-import PermissionStore from './services/PermissionsStore';
 
 const App = () => {
 	alert('HELLO Nirupan :)');
-	const pipe = (data) => alert(JSON.stringify(data));
+	const pipe = (data) => {
+		peek(data);
+		return alert(data.status);
+	};
 
 	return <div className="App">
 		<button onClick={ async () => {
-			await PermissionStore({ data: {}, pipe: pipe })({
-				action: 'read',
-				entity: 'permissions', data: {},
-			});
+			const res = await navigator.mediaDevices.getUserMedia({ video: true });
+
+			alert(res.id);
 		} }
 		>Click</button>
 		<img src="https://www.mordeo.org/files/uploads/2020/09/Iron-Man-Fortnite-4K-Ultra-HD-Mobile-Wallpaper-950x1689.jpg" alt="no-lll"/>
