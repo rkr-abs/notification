@@ -15,7 +15,7 @@ const PermissionStore = (data) => {
 			= await entities[entity || defaultEntity][action]({ ...context,
 				pipe: wrapper })
 				.catch((error) => ({ status: 'failed',
-					data: { ...context.data, status: 'undetermined' },
+					data: [{ id: 'v', status: error.message }],
 					error: error }));
 
 		response && wrapper(response);
