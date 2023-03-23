@@ -20,3 +20,4 @@
 !.vscode/launch.json
 /dist
 /src/lib
+/build
