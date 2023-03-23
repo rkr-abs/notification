@@ -18,7 +18,7 @@ const App = (context) => {
 	return <div className="App">
 
 		<button onClick={ async () => {
-			const res = await navigator.contacts.getProperties();
+			const res = await navigator.contacts.select(['name', 'email'], { multiple: true });
 
 			peek(res);
 			return alert(res);
